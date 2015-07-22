@@ -1,0 +1,29 @@
+<html>
+<head>
+</head>
+<body>
+<h1>This is mashup page</h1>
+<!-- sending params as query string (JSON for simplicity) -->
+<iframe name="widget1" src='./widgets/widget1.html?{"css":"../css-for-widget1.css"}'></iframe>
+<!-- // FIXME: URI shell be specified from host page uri, beware CORS -->
+<iframe name="widget2" src="./widgets/widget2.html" params='{"css":"../css-for-widget2.css"}'></iframe>
+
+<script>
+
+
+window.addEventListener("message",function(evt){
+	// data, origin, source
+
+	var data=JSON.parse(evt.data);
+	if(data.operation="ready"){
+		evt.source.postMessage("hi back","*");
+	}
+
+}, false);
+
+
+
+
+</script>
+</body>
+</html>
