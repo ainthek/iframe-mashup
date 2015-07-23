@@ -1,6 +1,7 @@
 <html>
 
 <head>
+    <script src="loadCss.js"></script>
     <script>
     // reading params from URI element
     // JSON only for fun, use query string parser of your framework
@@ -9,16 +10,7 @@
     loadCss(params.css);
 
 
-    function loadCss(uri) {
-        // FIXME: URI shell be specified from host page uri, not my uri
-        // which si a bit problematic, since I may not access parents uri
-        // maybe when he sends me a message ? the from the message ?
-        var l = document.createElement("link");
-        l.setAttribute("rel", "stylesheet");
-        l.setAttribute("type", "text/css");
-        l.setAttribute("href", uri);
-        document.getElementsByTagName("head")[0].appendChild(l);
-    }
+    
     </script>
 </head>
 
@@ -26,7 +18,7 @@
     <h1>w1</h1>
     <script>
     window.parent.postMessage(JSON.stringify({
-        "operation": "ready"
+        "_topic": "ready"
     }), "*");
 
     window.addEventListener("message", function(evt){

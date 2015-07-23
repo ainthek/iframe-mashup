@@ -15,8 +15,8 @@ window.addEventListener("message",function(evt){
 	// data, origin, source
 
 	var data=JSON.parse(evt.data);
-	if(data.operation="ready"){
-		evt.source.postMessage("hi back","*");
+	if(data._topic="ready"){
+		evt.source.postMessage("hi I'm happy you are ready","*");
 	}
 
 }, false);
