@@ -20,3 +20,8 @@ not a real demo, just my playground
 <https://www.npmjs.com/search?q=postMessage>
 
 <http://www.jsonrpc.org/specification>
+
+<http://keithclark.co.uk/articles/loading-css-without-blocking-render/>
+
+null document.styleSheets[0].cssRules
+<https://code.google.com/p/chromium/issues/detail?id=49001>

@@ -1,0 +1,8 @@
+/**
+Put here selector that you allow to be modified
+what is not in here, cannot be modified by host script
+**/
+h1 {
+	color:green;
+}
+

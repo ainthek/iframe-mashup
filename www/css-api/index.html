@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script>
+    function check() {
+        // TODO: do not rely on indexes
+        var allowedStylesheet = document.styleSheets[1];
+        var allowedRules = [].slice.call(allowedStylesheet.cssRules);
+        var allowedSelectors = allowedRules.map(function(r) {
+            return r.selectorText;
+        });
+        var requestedStylesheet = document.styleSheets[2];
+        var requestedRules = requestedStylesheet.cssRules;
+        
+        for(var i=0;i<requestedRules.length;i++){
+			if(!~allowedSelectors.indexOf(requestedRules.item(i).selectorText)){
+				requestedStylesheet.deleteRule(i);
+			}
+        }        
+    }
+    </script>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="api.css">
+    <link rel="stylesheet" href="override.css" onload="check();" >
+</head>
+
+<body>
+    <h1>Load CSS Without applying it</h1> by default this page is green title and greed div under
+    <div>
+        green
+    </div>
+    <span>green</span>
+    If everything works fine, then H1 will be red and div still green
+</body>
+
+</html>
