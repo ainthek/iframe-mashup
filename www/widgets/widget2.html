@@ -33,7 +33,7 @@
             } else {
                 callback(null, r);
             }
-        },3000);
+        }, 3000);
     }
 
 
@@ -48,7 +48,7 @@
     }
 
 
-    expose({
+    window.addEventListener("message", jsonRpcServer({
         // if your function is callback style, just expose it as is
         substract: substract,
         // to expose sync function you must do a little work
@@ -61,11 +61,11 @@
                 callback(ex);
             }
         }
-    }, window.parent, "*");
+    }, window.parent, "*"), false);
 
-    function expose(api, targetWindow, targetOrigin) {
+    function jsonRpcServer(api, targetWindow, targetOrigin) {
         // add own listener listening for all methods from API
-        window.addEventListener("message", function(evt) {
+        return function(evt) {
             var request;
             try {
                 request = JSON.parse(evt.data);
@@ -75,7 +75,7 @@
                 // not for my listener, allow iframe to provide JSON RPC along with other messages 
             }
 
-     
+
             var method = api[request.method];
 
             if (!method) {
@@ -108,7 +108,7 @@
                     "id": request.id // echo original id 
                 });
             }
-        });
+        }
     }
     </script>
 </body>
