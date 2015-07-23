@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html>
 
 <head>
@@ -23,52 +24,87 @@
         document.body.innerHTML += evt.data;
     }, false);
 
-    // API (sync)
+    // API (example of sync)
     function substract(a, b) {
         var r = a - b;
-       
+
         if (r < 0) { // just for demo
             throw new Error("substract failed");
         }
         return r;
     }
-    // exposed API (sync)
-    window.addEventListener("message", function(evt) {
+    // API (example of async function)
+    function asyncSubstract(a, b, callback) {
+        setTimeout(function() {
+            var r = a - b;
+            if (r < 0) {
+                callback(new Error("substract failed"));
+            } else {
+                callback(null, r);
+            }
+        });
+    }
 
-        try {
-            var request = JSON.parse(evt.data);
-        } catch (ex) {
-            return;
-        }
-        if ("substract" === request.method) {
 
-            // perform the real job
-            var rpcMessage;
+    expose({
+        // to expose sync function you must do a little work
+        // you must turn sync to async, 
+        // use this simple code or library if available in your widget imp
+        substract: function(a, b, callback) {
             try {
-                var r = substract.apply(null, request.params);
-                // send response to caller
-                rpcMessage = {
-                    result: r,
-                    // RPC payload   
-                    "jsonrpc": "2.0",
-                    "id": request.id // echo original id 
-                };
+                callback(null, substract(a, b));
             } catch (ex) {
-                //-32603 internal error
+                callback(ex);
+            }
+        }
+    }, window.parent, "*");
+
+    function expose(api, targetWindow, targetOrigin) {
+        // add own listener listening for all methods from API
+        window.addEventListener("message", function(evt) {
+            try {
+                var request = JSON.parse(evt.data);
+            } catch (ex) {
+                // if no JSON payload, silently return this is probably other message
+                // not for my listener, allow iframe to provide JSON RPC along with other messages 
+                return;
+            }
+            var rpcMessage;
+            if (!api[request.method]) {
                 rpcMessage = {
                     error: {
-                        code: -32603
+                        code: -32601 //method not found
                     },
                     // RPC payload   
                     "jsonrpc": "2.0",
                     "id": request.id // echo original id 
                 };
+            } else {
+                api[request.method].apply(null, request.params.concat(function(err, r) {
+                    if (err) {
+                        rpcMessage = {
+                            error: {
+                                code: -32603 //-32603 internal error
+                            },
+                            // RPC payload   
+                            "jsonrpc": "2.0",
+                            "id": request.id // echo original id 
+                        };
+                    } else {
+                        rpcMessage = {
+                            result: r,
+                            // RPC payload   
+                            "jsonrpc": "2.0",
+                            "id": request.id // echo original id 
+                        };
+                    }
+                }));
             }
-            window.parent.postMessage(JSON.stringify(rpcMessage), "*");
-            // BUG; posting twice
-            window.parent.postMessage(JSON.stringify(rpcMessage), "*");
-        }
-    }, false);
+            targetWindow.postMessage(JSON.stringify(rpcMessage), "*");
+            // intentional BUG; posting twice
+            // targetWindow.postMessage(JSON.stringify(rpcMessage), "*");
+        });
+    }
     </script>
 </body>
 
