@@ -40,7 +40,9 @@
                 var response=JSON.parse(evt.data); 
 
                 if (request.id === response.id) {
-
+                    // remove listener for this result
+                    window.removeEventListener("message",arguments.callee,false); 
+                    // process results   
                     console.log("result:",response.result);
                 }
             });

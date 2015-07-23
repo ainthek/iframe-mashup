@@ -48,6 +48,8 @@
                 "id": request.id // echo original id 
             };
             window.parent.postMessage(JSON.stringify(rpcMessage), "*");
+            // BUG; posting twice
+            window.parent.postMessage(JSON.stringify(rpcMessage), "*");
         }
     }, false);
     </script>
