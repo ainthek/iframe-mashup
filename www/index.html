@@ -58,14 +58,25 @@
         if ("ready" === (rpc = JSON.parse(evt.data))._topic) {
             // the send message and waith for results
             var componentWindow = evt.source;
+            // async error
             send(componentWindow, "substract", [10, 20], function(err, result) {
-                console.log("callback:", err, result);
+                console.log("substract:", err, result);
             });
+            // async ok
             send(componentWindow, "substract", [20, 10], function(err, result) {
-                console.log("callback:", err, result);
+                console.log("substract:", err, result);
             });
-            send(componentWindow, "unknow method", [20, 10], function(err, result) {
-                console.log("callback:", err, result);
+              // async error
+            send(componentWindow, "add", [10, -20], function(err, result) {
+                console.log("add:", err, result);
+            });
+            // async ok
+            send(componentWindow, "add", [20, 10], function(err, result) {
+                console.log("add:", err, result);
+            });
+            // 
+            send(componentWindow, "unknown", [20, 10], function(err, result) {
+                console.log("unknown:", err, result);
             });
         }
 

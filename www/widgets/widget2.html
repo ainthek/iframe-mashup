@@ -24,17 +24,8 @@
         document.body.innerHTML += evt.data;
     }, false);
 
-    // API (example of sync)
-    function substract(a, b) {
-        var r = a - b;
-
-        if (r < 0) { // just for demo
-            throw new Error("substract failed");
-        }
-        return r;
-    }
     // API (example of async function)
-    function asyncSubstract(a, b, callback) {
+    function substract(a, b, callback) {
         setTimeout(function() {
             var r = a - b;
             if (r < 0) {
@@ -42,17 +33,30 @@
             } else {
                 callback(null, r);
             }
-        });
+        },3000);
+    }
+
+
+    // API (example of sync)
+    function add(a, b) {
+        var r = a + b;
+
+        if (r < 0) { // just for demo
+            throw new Error("substract failed");
+        }
+        return r;
     }
 
 
     expose({
+        // if your function is callback style, just expose it as is
+        substract: substract,
         // to expose sync function you must do a little work
         // you must turn sync to async, 
-        // use this simple code or library if available in your widget imp
-        substract: function(a, b, callback) {
+        // use this simple code or some library call used in your widget component
+        add: function(a, b, callback) {
             try {
-                callback(null, substract(a, b));
+                callback(null, add(a, b));
             } catch (ex) {
                 callback(ex);
             }
@@ -62,47 +66,48 @@
     function expose(api, targetWindow, targetOrigin) {
         // add own listener listening for all methods from API
         window.addEventListener("message", function(evt) {
+            var request;
             try {
-                var request = JSON.parse(evt.data);
+                request = JSON.parse(evt.data);
             } catch (ex) {
+                return;
                 // if no JSON payload, silently return this is probably other message
                 // not for my listener, allow iframe to provide JSON RPC along with other messages 
-                return;
             }
-            var rpcMessage;
-            if (!api[request.method]) {
-                rpcMessage = {
+
+     
+            var method = api[request.method];
+
+            if (!method) {
+                targetWindow.postMessage(err(-32601), "*"); //method not found
+            } else {
+                method.apply(null, request.params.concat(function(e, r) {
+                    e //
+                        && targetWindow.postMessage(err(-32603), "*") //
+                        || targetWindow.postMessage(result(r), "*")
+                }));
+            }
+
+            //-------------------------------------------------------------------------------------------
+            function err(code) {
+                return JSON.stringify({
                     error: {
-                        code: -32601 //method not found
+                        code: code
                     },
                     // RPC payload   
                     "jsonrpc": "2.0",
                     "id": request.id // echo original id 
-                };
-            } else {
-                api[request.method].apply(null, request.params.concat(function(err, r) {
-                    if (err) {
-                        rpcMessage = {
-                            error: {
-                                code: -32603 //-32603 internal error
-                            },
-                            // RPC payload   
-                            "jsonrpc": "2.0",
-                            "id": request.id // echo original id 
-                        };
-                    } else {
-                        rpcMessage = {
-                            result: r,
-                            // RPC payload   
-                            "jsonrpc": "2.0",
-                            "id": request.id // echo original id 
-                        };
-                    }
-                }));
+                });
             }
-            targetWindow.postMessage(JSON.stringify(rpcMessage), "*");
-            // intentional BUG; posting twice
-            // targetWindow.postMessage(JSON.stringify(rpcMessage), "*");
+
+            function result(result) {
+                return JSON.stringify({
+                    result: result,
+                    // RPC payload   
+                    "jsonrpc": "2.0",
+                    "id": request.id // echo original id 
+                });
+            }
         });
     }
     </script>
