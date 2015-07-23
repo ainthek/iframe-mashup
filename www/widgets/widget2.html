@@ -25,28 +25,45 @@
 
     // API (sync)
     function substract(a, b) {
-        return a - b;
+        var r = a - b;
+       
+        if (r < 0) { // just for demo
+            throw new Error("substract failed");
+        }
+        return r;
     }
     // exposed API (sync)
     window.addEventListener("message", function(evt) {
-        
-        try{
-            var request=JSON.parse(evt.data);
-        }
-        catch(ex){
+
+        try {
+            var request = JSON.parse(evt.data);
+        } catch (ex) {
             return;
         }
         if ("substract" === request.method) {
-           
+
             // perform the real job
-            var r = substract.apply(null,request.params);
-            // send response to caller
-            var rpcMessage = {
-                result: r,
-                // RPC payload   
-                "jsonrpc": "2.0",
-                "id": request.id // echo original id 
-            };
+            var rpcMessage;
+            try {
+                var r = substract.apply(null, request.params);
+                // send response to caller
+                rpcMessage = {
+                    result: r,
+                    // RPC payload   
+                    "jsonrpc": "2.0",
+                    "id": request.id // echo original id 
+                };
+            } catch (ex) {
+                //-32603 internal error
+                rpcMessage = {
+                    error: {
+                        code: -32603
+                    },
+                    // RPC payload   
+                    "jsonrpc": "2.0",
+                    "id": request.id // echo original id 
+                };
+            }
             window.parent.postMessage(JSON.stringify(rpcMessage), "*");
             // BUG; posting twice
             window.parent.postMessage(JSON.stringify(rpcMessage), "*");

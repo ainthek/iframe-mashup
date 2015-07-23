@@ -25,7 +25,7 @@
         var rpc;
         if ("ready" === (rpc = JSON.parse(evt.data))._topic) {
             // the send message and waith for results
-            var componentWindow = evt.source;   
+            var componentWindow = evt.source;
             //http://www.jsonrpc.org/specification
             var request = {
                 // call data
@@ -35,22 +35,59 @@
                 "jsonrpc": "2.0",
                 "id": +new Date + Math.random()
             };
-            window.addEventListener("message",function(evt){
-              
-                var response=JSON.parse(evt.data); 
+            window.addEventListener("message", function(evt) {
+
+                var response = JSON.parse(evt.data);
 
                 if (request.id === response.id) {
                     // remove listener for this result
-                    window.removeEventListener("message",arguments.callee,false); 
+                    window.removeEventListener("message", arguments.callee, false);
                     // process results   
-                    console.log("result:",response.result);
+                    console.log("result:", response.result);
                 }
             });
             componentWindow.postMessage(JSON.stringify(request), "*");
         }
+    }, false);
 
 
+    // wait for component to be ready 
+    window.addEventListener("message", function(evt) {
+        var rpc;
+        if ("ready" === (rpc = JSON.parse(evt.data))._topic) {
+            // the send message and waith for results
+            var componentWindow = evt.source;
+            send(componentWindow, "substract", [10, 20], function(err, result) {
+                console.log("callback:", err, result);
+            });
+            send(componentWindow, "substract", [20, 10], function(err, result) {
+                console.log("callback:", err, result);
+            });
+        }
 
+        function send(componentWindow, method, params, callback) {
+            //http://www.jsonrpc.org/specification
+            var request = {
+                // call data
+                "method": method,
+                "params": params,
+                // RPC payload   
+                "jsonrpc": "2.0",
+                "id": +new Date + Math.random()
+            };
+            window.addEventListener("message", function(evt) {
+
+                var response = JSON.parse(evt.data);
+
+                if (request.id === response.id) {
+                    // remove listener for this result
+                    window.removeEventListener("message", arguments.callee, false);
+                    //  
+                    callback(response.error, response.result);
+                }
+            });
+            componentWindow.postMessage(JSON.stringify(request), "*");
+        }
     }, false);
     </script>
 </body>
