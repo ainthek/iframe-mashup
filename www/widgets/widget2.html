@@ -9,9 +9,6 @@
     var params = JSON.parse(window.frameElement.getAttribute("params"));
 
     loadCss(params.css);
-
-
-    
     </script>
 </head>
 
@@ -22,8 +19,36 @@
         "_topic": "ready"
     }), "*");
 
-    window.addEventListener("message", function(evt){
-    	document.body.innerHTML+=evt.data;
+    window.addEventListener("message", function(evt) {
+        document.body.innerHTML += evt.data;
+    }, false);
+
+    // API (sync)
+    function substract(a, b) {
+        return a - b;
+    }
+    // exposed API (sync)
+    window.addEventListener("message", function(evt) {
+        
+        try{
+            var request=JSON.parse(evt.data);
+        }
+        catch(ex){
+            return;
+        }
+        if ("substract" === request.method) {
+           
+            // perform the real job
+            var r = substract.apply(null,request.params);
+            // send response to caller
+            var rpcMessage = {
+                result: r,
+                // RPC payload   
+                "jsonrpc": "2.0",
+                "id": request.id // echo original id 
+            };
+            window.parent.postMessage(JSON.stringify(rpcMessage), "*");
+        }
     }, false);
     </script>
 </body>

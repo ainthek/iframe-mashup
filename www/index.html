@@ -1,29 +1,56 @@
 <html>
+
 <head>
 </head>
+
 <body>
-<h1>This is mashup page</h1>
-<!-- sending params as query string (JSON for simplicity) -->
-<iframe name="widget1" src='./widgets/widget1.html?{"css":"../css-for-widget1.css"}'></iframe>
-<!-- // FIXME: URI shell be specified from host page uri, beware CORS -->
-<iframe name="widget2" src="./widgets/widget2.html" params='{"css":"../css-for-widget2.css"}'></iframe>
+    <h1>This is mashup page</h1>
+    <!-- sending params as query string (JSON for simplicity) -->
+    <iframe name="widget1" src='./widgets/widget1.html?{"css":"../css-for-widget1.css"}'></iframe>
+    <!-- // FIXME: URI shell be specified from host page uri, beware CORS -->
+    <iframe name="widget2" src="./widgets/widget2.html" params='{"css":"../css-for-widget2.css"}'></iframe>
+    <script>
+    // react for events
+    window.addEventListener("message", function(evt) {
+        // data, origin, source
+        var data;
+        if ("ready" === (data = JSON.parse(evt.data))._topic) {
+            var componentWindow = evt.source;
+            componentWindow.postMessage("hi I'm happy you are ready", "*");
+        }
+    }, false);
 
-<script>
+    // wait for component to be ready 
+    window.addEventListener("message", function(evt) {
+        var rpc;
+        if ("ready" === (rpc = JSON.parse(evt.data))._topic) {
+            // the send message and waith for results
+            var componentWindow = evt.source;   
+            //http://www.jsonrpc.org/specification
+            var request = {
+                // call data
+                "method": "substract",
+                "params": [42, 23],
+                // RPC payload   
+                "jsonrpc": "2.0",
+                "id": +new Date + Math.random()
+            };
+            window.addEventListener("message",function(evt){
+              
+                var response=JSON.parse(evt.data); 
+
+                if (request.id === response.id) {
+
+                    console.log("result:",response.result);
+                }
+            });
+            componentWindow.postMessage(JSON.stringify(request), "*");
+        }
 
 
-window.addEventListener("message",function(evt){
-	// data, origin, source
 
-	var data=JSON.parse(evt.data);
-	if(data._topic="ready"){
-		evt.source.postMessage("hi I'm happy you are ready","*");
-	}
-
-}, false);
-
-
-
-
-</script>
+    }, false);
+    </script>
 </body>
+
 </html>
