@@ -51,7 +51,9 @@
         }
     }, false);
 
-
+    </script>
+    <script src="jsonRpcCall.js"></script>
+    <script>
     // wait for component to be ready 
     window.addEventListener("message", function(evt) {
         var rpc;
@@ -59,50 +61,28 @@
             // the send message and waith for results
             var componentWindow = evt.source;
             // async error
-            send(componentWindow, "substract", [10, 20], function(err, result) {
+            jsonRpcCall(componentWindow, "substract", [10, 20], function(err, result) {
                 console.log("substract:", err, result);
             });
             // async ok
-            send(componentWindow, "substract", [20, 10], function(err, result) {
+            jsonRpcCall(componentWindow, "substract", [20, 10], function(err, result) {
                 console.log("substract:", err, result);
             });
               // async error
-            send(componentWindow, "add", [10, -20], function(err, result) {
+            jsonRpcCall(componentWindow, "add", [10, -20], function(err, result) {
                 console.log("add:", err, result);
             });
             // async ok
-            send(componentWindow, "add", [20, 10], function(err, result) {
+            jsonRpcCall(componentWindow, "add", [20, 10], function(err, result) {
                 console.log("add:", err, result);
             });
             // 
-            send(componentWindow, "unknown", [20, 10], function(err, result) {
+            jsonRpcCall(componentWindow, "unknown", [20, 10], function(err, result) {
                 console.log("unknown:", err, result);
             });
         }
 
-        function send(componentWindow, method, params, callback) {
-            //http://www.jsonrpc.org/specification
-            var request = {
-                // call data
-                "method": method,
-                "params": params,
-                // RPC payload   
-                "jsonrpc": "2.0",
-                "id": +new Date + Math.random()
-            };
-            window.addEventListener("message", function(evt) {
-
-                var response = JSON.parse(evt.data);
-
-                if (request.id === response.id) {
-                    // remove listener for this result
-                    window.removeEventListener("message", arguments.callee, false);
-                    //  
-                    callback(response.error, response.result);
-                }
-            });
-            componentWindow.postMessage(JSON.stringify(request), "*");
-        }
+       
     }, false);
     </script>
 </body>

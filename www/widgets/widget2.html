@@ -8,21 +8,31 @@
     //TODO: check mobile support of frameElement ?
     // on local chrome and CORS denies access to frameElement ?
     var params = JSON.parse(window.frameElement.getAttribute("params"));
-
     loadCss(params.css);
     </script>
 </head>
 
 <body>
     <h1>w2</h1>
+    <!-- sending events is easy, normal window postMessage works fine -->
     <script>
-    window.parent.postMessage(JSON.stringify({
-        "_topic": "ready"
-    }), "*");
+   
 
     window.addEventListener("message", function(evt) {
         document.body.innerHTML += evt.data;
     }, false);
+
+    window.parent.postMessage(JSON.stringify({
+        "_topic": "ready"
+    }), "*");
+    
+    </script>
+
+    <!-- serving methods is more challenging but using simple code it is simple as well -->
+    <script src="../jsonRpcServer.js"></script>
+    <script>
+
+    // lets have some api on the page we want to expose:
 
     // API (example of async function)
     function substract(a, b, callback) {
@@ -47,7 +57,7 @@
         return r;
     }
 
-
+    // now expose it with messages
     window.addEventListener("message", jsonRpcServer({
         // if your function is callback style, just expose it as is
         substract: substract,
@@ -62,54 +72,6 @@
             }
         }
     }, window.parent, "*"), false);
-
-    function jsonRpcServer(api, targetWindow, targetOrigin) {
-        // add own listener listening for all methods from API
-        return function(evt) {
-            var request;
-            try {
-                request = JSON.parse(evt.data);
-            } catch (ex) {
-                return;
-                // if no JSON payload, silently return this is probably other message
-                // not for my listener, allow iframe to provide JSON RPC along with other messages 
-            }
-
-
-            var method = api[request.method];
-
-            if (!method) {
-                targetWindow.postMessage(err(-32601), "*"); //method not found
-            } else {
-                method.apply(null, request.params.concat(function(e, r) {
-                    e //
-                        && targetWindow.postMessage(err(-32603), "*") //
-                        || targetWindow.postMessage(result(r), "*")
-                }));
-            }
-
-            //-------------------------------------------------------------------------------------------
-            function err(code) {
-                return JSON.stringify({
-                    error: {
-                        code: code
-                    },
-                    // RPC payload   
-                    "jsonrpc": "2.0",
-                    "id": request.id // echo original id 
-                });
-            }
-
-            function result(result) {
-                return JSON.stringify({
-                    result: result,
-                    // RPC payload   
-                    "jsonrpc": "2.0",
-                    "id": request.id // echo original id 
-                });
-            }
-        }
-    }
     </script>
 </body>
 
