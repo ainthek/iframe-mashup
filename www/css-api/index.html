@@ -10,15 +10,52 @@
         var allowedSelectors = allowedRules.map(function(r) {
             return r.selectorText;
         });
+        // this could be media none or disabled and then enabled ?
         var requestedStylesheet = document.styleSheets[2];
         var requestedRules = requestedStylesheet.cssRules;
         
         for(var i=0;i<requestedRules.length;i++){
+        	var style=requestedRules.item(i);
+        	// [].slice.call(document.styleSheets[1].rules[0].style)
 			if(!~allowedSelectors.indexOf(requestedRules.item(i).selectorText)){
 				requestedStylesheet.deleteRule(i);
 			}
-        }        
+        }
     }
+
+    /*
+		function findMatches(fulls,partials){
+			// o(n) n=fulls[].join.length ?
+			// GIGO: 
+			// empty sequence matches anything
+			// missing seqlence produces null (no match)
+			return partials.map(function(partial,i){
+				for(var i=0;i<fulls.length;i++){
+					if(partial && fulls[i] && containsSequence(fulls[i],partial))
+					{
+						return fulls[i];
+					}
+				}
+				return null;
+			});
+			function containsSequence(full,sequence){
+				for(var f=0,s=0,fl=full.length,sl=sequence.length; s<sl && f<fl;full[f++]===sequence[s] && s++);
+				return full && s==sl;
+			}
+		}
+		findMatches.__test=function(){
+			var test=require("assert").deepEqual;
+			test(["1234"],findMatches(["1234"],["12"]),							"1st 2");
+			test(["1234"],findMatches(["1234"],["34"]),							"last 2");
+			test(["1234"],findMatches(["1234"],["14"]),							"1st last");
+			test(["12345"],findMatches(["12345"],["24"]),						"middle with gap");
+			test([null],findMatches(["1234"],["21"]),							"in wrong order");
+			test(["1234","5678"],findMatches(["1234","5678"],["12","78"]),		"more inputs");
+			test(["1234"],findMatches(["1234","5678"],["12"]),					"1st-array longer");
+			test(["1234",null],findMatches(["1234"],["12","56"]),				"2nd array longer");			
+			test(["hello", "abcd"],findMatches(["abcd","hello"],["lo","ad"]),	"are you happy now ?");
+		}
+	*/
     </script>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="api.css">
@@ -35,3 +72,4 @@
 </body>
 
 </html>
+
