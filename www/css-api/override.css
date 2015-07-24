@@ -1,10 +1,19 @@
-span {
-	background-color: red;
-}
-h1 {
-	color:red;
+/**
+Customization script for widget.
+You can modify only tese selectors and properties
+specified here, you can ommit some of them
+**/
+
+.address-bar {
+	color: red;
+	/*background-color: green;*/
+	border-color:red;
 }
 
-div {
-	background-color: red;
+/* this is unlikely in production,
+mustly you will have classes and more specific selectors, 
+this is just for demo
+*/
+span {
+	color: red;
 }

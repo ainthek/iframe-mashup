@@ -1,9 +1,21 @@
 /**
-Put here selector that you allow to be modified
-what is not in here, cannot be modified by host script
+Customization script for widget.
+You can modify only tese selectors and properties
+specified here, you can ommit some of them
 **/
-h1 {
-	color:green;
-	background-color:blue;
+
+.address-bar {
+	color: black;
+	background-color: green;
+	border-color:black;
 }
+
+/* this is unlikely in production,
+mustly you will have classes and more specific selectors, 
+this is just for demo
+*/
+span {
+	color: green;
+}
+
 

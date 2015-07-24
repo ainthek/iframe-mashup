@@ -2,74 +2,44 @@
 <html>
 
 <head>
+	<script src="../cssCheck.js"></script>
     <script>
     function check() {
         // TODO: do not rely on indexes
         var allowedStylesheet = document.styleSheets[1];
-        var allowedRules = [].slice.call(allowedStylesheet.cssRules);
-        var allowedSelectors = allowedRules.map(function(r) {
-            return r.selectorText;
-        });
-        // this could be media none or disabled and then enabled ?
         var requestedStylesheet = document.styleSheets[2];
-        var requestedRules = requestedStylesheet.cssRules;
-        
-        for(var i=0;i<requestedRules.length;i++){
-        	var style=requestedRules.item(i);
-        	// [].slice.call(document.styleSheets[1].rules[0].style)
-			if(!~allowedSelectors.indexOf(requestedRules.item(i).selectorText)){
-				requestedStylesheet.deleteRule(i);
-			}
-        }
-    }
 
-    /*
-		function findMatches(fulls,partials){
-			// o(n) n=fulls[].join.length ?
-			// GIGO: 
-			// empty sequence matches anything
-			// missing seqlence produces null (no match)
-			return partials.map(function(partial,i){
-				for(var i=0;i<fulls.length;i++){
-					if(partial && fulls[i] && containsSequence(fulls[i],partial))
-					{
-						return fulls[i];
-					}
-				}
-				return null;
-			});
-			function containsSequence(full,sequence){
-				for(var f=0,s=0,fl=full.length,sl=sequence.length; s<sl && f<fl;full[f++]===sequence[s] && s++);
-				return full && s==sl;
-			}
-		}
-		findMatches.__test=function(){
-			var test=require("assert").deepEqual;
-			test(["1234"],findMatches(["1234"],["12"]),							"1st 2");
-			test(["1234"],findMatches(["1234"],["34"]),							"last 2");
-			test(["1234"],findMatches(["1234"],["14"]),							"1st last");
-			test(["12345"],findMatches(["12345"],["24"]),						"middle with gap");
-			test([null],findMatches(["1234"],["21"]),							"in wrong order");
-			test(["1234","5678"],findMatches(["1234","5678"],["12","78"]),		"more inputs");
-			test(["1234"],findMatches(["1234","5678"],["12"]),					"1st-array longer");
-			test(["1234",null],findMatches(["1234"],["12","56"]),				"2nd array longer");			
-			test(["hello", "abcd"],findMatches(["abcd","hello"],["lo","ad"]),	"are you happy now ?");
-		}
-	*/
+ 		if(cssCheck(allowedStylesheet, requestedStylesheet)){
+ 			// TODO: enabled disabled ? or media list ?
+ 			document.styleSheets[2].ownerNode.media="all"
+ 		}; 
+    }
     </script>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="api.css">
-    <link rel="stylesheet" href="override.css" onload="check();" >
+    <link rel="stylesheet" href="override.css" media="none" onload="check();">
 </head>
 
 <body>
-    <h1>Load CSS Without applying it</h1> by default this page is green title and greed div under
-    <div>
-        green
+    <h1>Demo of CSS loading and CSS Check</h1> 
+   	
+   	api.css defines what user of this component can change in his override.css.
+   	If he puts something else, or modifies the order of selectors or properties inside
+   	declaration, her css is not applied.
+
+    <div class="address-bar">
+        you can modify 
+
+			color 
+			background-color
+			border-color
+		
+    </div> 
+    <span>This is just span, you can modify color only</span>
+
+     <div class="footer">
+        This is footer, you can not modify anything here
     </div>
-    <span>green</span>
-    If everything works fine, then H1 will be red and div still green
 </body>
 
 </html>
-
