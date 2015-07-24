@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="api.css"> 
+
+    <script src="../../cssCheck.js"></script>
+    <script>
+    // reading params from URI element
+    // JSON only for fun, use query string parser of your framework
+    
+    var params = JSON.parse(decodeURIComponent(window.location.search.substring(1)));
+    // link with api.css must be loaded prior loading override
+    loadCss(params.css,document.styleSheets[1] /* api.css */);
+   
+    </script>
+   
+</head>
+
+<body>
+    <h1>Demo of CSS loading and CSS Check</h1> api.css defines what user of this component can change in his override.css. If he puts something else, or modifies the order of selectors or properties inside declaration, her css is not applied.
+    <div class="address-bar">
+        you can modify color background-color border-color
+    </div>
+    <span>This is just span, you can modify color only</span>
+    <div class="footer">
+        This is footer, you can not modify anything here
+    </div>
+</body>
+
+</html>

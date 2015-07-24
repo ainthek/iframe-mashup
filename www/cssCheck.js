@@ -65,3 +65,29 @@ function cssCheck(expectedStyleSheet, realStyleSheet) {
         return undefined;
     };
 }
+
+function loadCss(uri, allowedStylesheet) {
+    // loads css and checks agains stylesheet
+    // FIXME: URI shell be specified from host page uri, not my uri
+    // which si a bit problematic, since I may not access parents uri
+    // maybe when he sends me a message ? the from the message ?
+    var link = document.createElement("link");
+    link.setAttribute("rel", "stylesheet");
+    link.setAttribute("href", uri);
+
+    link.setAttribute("media", "none"); //!!!
+    addEventListener("load", function() {
+
+        // find styleskeet for this element/node
+        var requestedStylesheet = [].slice.call(document.styleSheets).filter(function(styleSheet) {
+            return styleSheet.ownerNode === link;
+        })[0];
+        console.assert(requestedStylesheet!=null);
+        if (cssCheck(allowedStylesheet, requestedStylesheet)) {
+            link.media = "all"; // TODO: enabled disabled ? or media list ?
+        } else {
+            console.error("cssCheck: rejecting stylesheet", uri);
+        }
+    });
+    document.getElementsByTagName("head")[0].appendChild(link);
+}
