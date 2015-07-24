@@ -25,3 +25,7 @@ not a real demo, just my playground
 
 null document.styleSheets[0].cssRules
 <https://code.google.com/p/chromium/issues/detail?id=49001>
+
+seemless iframe (rendering only)
+http://stackoverflow.com/questions/65034/remove-border-from-iframe
+https://bocoup.com/weblog/third-party-javascript-development-future/#iframe-seamless

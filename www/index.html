@@ -11,7 +11,11 @@
     <!-- // FIXME: URI shell be specified from host page uri, beware CORS -->
     <iframe name="widget2" src="./widgets/widget2.html" params='{"css":"../css-for-widget2.css"}'></iframe>
     <hr/>
-    <iframe name="widget1" src='./widgets/widget3/index.html?{"css":"../../css-for-widget3.css"}' height="500px" width="500px"></iframe>
+    <iframe name="widget3" src='./widgets/widget3/index.html?{"css":"../../css-for-widget3.css"}' height="500px" width="500px"></iframe>
+    <iframe name="widget4" src='./widgets/widget4/index.html' 
+            scrolling="no" marginwidth="0" marginheight="0" frameborder="0" vspace="0" hspace="0" 
+            width="500px" height="400px">
+    </iframe>
     <script>
     // react for events
     window.addEventListener("message", function(evt) {
@@ -52,7 +56,6 @@
             componentWindow.postMessage(JSON.stringify(request), "*");
         }
     }, false);
-
     </script>
     <script src="jsonRpcCall.js"></script>
     <script>
@@ -70,7 +73,7 @@
             jsonRpcCall(componentWindow, "substract", [20, 10], function(err, result) {
                 console.log("substract:", err, result);
             });
-              // async error
+            // async error
             jsonRpcCall(componentWindow, "add", [10, -20], function(err, result) {
                 console.log("add:", err, result);
             });
@@ -84,8 +87,11 @@
             });
         }
 
-       
+
     }, false);
+    </script>
+    <script>
+    
     </script>
 </body>
 
