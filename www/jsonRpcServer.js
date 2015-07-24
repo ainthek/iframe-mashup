@@ -60,12 +60,12 @@ jsonRpcServer.bindSync=function(fnc , thisArg ){
         catch(ex){
             callback(ex,null);
         }
-    }
-}
+    };
+};
 
 jsonRpcServer.bindAsync=function(){
     // TODO: implement, // try without any dependencies, or probably only
     // pubslish how to, if some widget already has promises, it will have api to 
     // convert them to callbacks
     // converts function that retuns promise to callback style ;-)  
-}
+};

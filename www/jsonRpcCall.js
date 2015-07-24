@@ -51,5 +51,5 @@
              // not for my listener, allow iframe to provide JSON RPC along with other messages 
              return;
          }
-     }
+     };
  }
