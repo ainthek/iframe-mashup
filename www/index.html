@@ -14,21 +14,19 @@
     <iframe name="widget3" src='./widgets/widget3/index.html?{"css":"../../css-for-widget3.css"}' height="500px" width="500px"></iframe>
     <iframe name="widget4" src='./widgets/widget4/index.html' scrolling="no" marginwidth="0" marginheight="0" frameborder="0" vspace="0" hspace="0" width="500px" height="400px">
     </iframe>
+    <script src="jsonRpcCall.js"></script>
     <script>
     // react for events
-    window.addEventListener("message", function(evt) {
-        // data, origin, source
-        var data;
-        if ("ready" === (data = JSON.parse(evt.data))._topic) {
+    window.addEventListener("message", jsonListener(function(evt, data) {
+        if ("ready" === data._topic) {
             var componentWindow = evt.source;
             componentWindow.postMessage("hi I'm happy you are ready", "*");
         }
-    }, false);
+    }), false);
 
     // wait for component to be ready 
-    window.addEventListener("message", function(evt) {
-        var rpc;
-        if ("ready" === (rpc = JSON.parse(evt.data))._topic) {
+    window.addEventListener("message", jsonListener(function(evt, rpc) {
+        if ("ready" === rpc._topic) {
             // the send message and waith for results
             var componentWindow = evt.source;
             //http://www.jsonrpc.org/specification
@@ -42,7 +40,13 @@
             };
             window.addEventListener("message", function(evt) {
 
-                var response = JSON.parse(evt.data);
+                try {
+                    var response = JSON.parse(evt.data);
+                } catch (ex) {
+                    // if no JSON payload, silently return this is probably other message
+                    // not for my listener, allow iframe to provide JSON RPC along with other messages 
+                    return;
+                }
 
                 if (request.id === response.id) {
                     // remove listener for this result
@@ -53,14 +57,13 @@
             });
             componentWindow.postMessage(JSON.stringify(request), "*");
         }
-    }, false);
+    }), false);
     </script>
-    <script src="jsonRpcCall.js"></script>
+   
     <script>
     // wait for component to be ready 
-    window.addEventListener("message", function(evt) {
-        var rpc;
-        if ("ready" === (rpc = JSON.parse(evt.data))._topic) {
+    window.addEventListener("message", jsonListener(function(evt, rpc) {
+        if ("ready" === rpc._topic) {
             // the send message and waith for results
             var componentWindow = evt.source;
             // async error
@@ -86,7 +89,7 @@
         }
 
 
-    }, false);
+    }), false);
     </script>
     <button id="panTo">panTo</button>
     <script>

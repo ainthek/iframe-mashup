@@ -9,9 +9,7 @@
          "jsonrpc": "2.0",
          "id": +new Date() + Math.random()
      };
-     window.addEventListener("message", function(evt) {
-
-         var response = JSON.parse(evt.data);
+     window.addEventListener("message", jsonListener(function(evt, response) {
 
          if (request.id === response.id) {
              // remove listener for this result
@@ -19,6 +17,19 @@
              //  
              callback(response.error, response.result);
          }
-     });
+     }));
      otherWindow.postMessage(JSON.stringify(request), "*");
+ }
+ /* exported jsonListener */
+ function jsonListener(fnc) {
+     // use this to simplify code in window.addMessageLsteren
+     return function(evt) {
+         try {
+             fnc(evt, JSON.parse(evt.data));
+         } catch (ex) {
+             // if no JSON payload, silently return this is probably other message
+             // not for my listener, allow iframe to provide JSON RPC along with other messages 
+             return;
+         }
+     }
  }
