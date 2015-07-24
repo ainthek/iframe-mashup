@@ -24,8 +24,11 @@
             mapTypeId: google.maps.MapTypeId.ROADMAP
         });
         // publish events
-        google.maps.event.addListener(map, 'click', function() {
-            window.parent.postMessage("map-click","*");
+        google.maps.event.addListener(map, 'click', function(evt) {
+            window.parent.postMessage(JSON.stringify({
+                _topic: "position-selected",
+                latLng: evt.latLng
+            }), "*");
         });
         // publish map api
         window.addEventListener("message", jsonRpcServer({

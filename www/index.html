@@ -59,7 +59,6 @@
         }
     }), false);
     </script>
-   
     <script>
     // wait for component to be ready 
     window.addEventListener("message", jsonListener(function(evt, rpc) {
@@ -99,6 +98,9 @@
             lng: 150.644
         }], function() {});
     };
+    window.addEventListener("message",jsonListener(function(evt, data) {
+        jsonRpcCall(frames.widget2, "display", [JSON.stringify(data)], function() {});
+    }), false);
     </script>
 </body>
 
