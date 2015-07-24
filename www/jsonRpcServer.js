@@ -44,3 +44,20 @@ function jsonRpcServer(api, targetWindow, targetOrigin) {
         }
     };
 }
+
+jsonRpcServer.bindSync=function(fnc , thisArg ){
+    // adds one more parameter to original funcion
+    // and converts retval or error to callback values
+
+    return function(/* a,b,c, callback */){
+        try{
+            var args=Array.prototype.slice.call(arguments);
+            var callback=args.pop();
+            // assert callback is function
+            callback(null,fnc.apply(thisArg,args));
+        }
+        catch(ex){
+            callback(ex,null);
+        }
+    }
+}

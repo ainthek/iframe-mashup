@@ -12,9 +12,7 @@
     <iframe name="widget2" src="./widgets/widget2.html" params='{"css":"../css-for-widget2.css"}'></iframe>
     <hr/>
     <iframe name="widget3" src='./widgets/widget3/index.html?{"css":"../../css-for-widget3.css"}' height="500px" width="500px"></iframe>
-    <iframe name="widget4" src='./widgets/widget4/index.html' 
-            scrolling="no" marginwidth="0" marginheight="0" frameborder="0" vspace="0" hspace="0" 
-            width="500px" height="400px">
+    <iframe name="widget4" src='./widgets/widget4/index.html' scrolling="no" marginwidth="0" marginheight="0" frameborder="0" vspace="0" hspace="0" width="500px" height="400px">
     </iframe>
     <script>
     // react for events
@@ -90,8 +88,14 @@
 
     }, false);
     </script>
+    <button id="panTo">panTo</button>
     <script>
-    
+    document.getElementById("panTo").onclick = function() {
+        jsonRpcCall(frames.widget4, "panTo", [{
+            lat: -34.397,
+            lng: 150.644
+        }], function() {});
+    };
     </script>
 </body>
 

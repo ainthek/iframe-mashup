@@ -64,13 +64,15 @@
         // to expose sync function you must do a little work
         // you must turn sync to async, 
         // use this simple code or some library call used in your widget component
-        add: function(a, b, callback) {
+        /*add: function(a, b, callback) {
             try {
                 callback(null, add(a, b));
             } catch (ex) {
                 callback(ex);
             }
         }
+        */
+        add:jsonRpcServer.bindSync(add)
     }, window.parent, "*"), false);
     </script>
 </body>
