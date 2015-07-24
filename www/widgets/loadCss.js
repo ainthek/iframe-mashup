@@ -1,3 +1,4 @@
+/* exported loadCss */
 function loadCss(uri, media) {
     // FIXME: URI shell be specified from host page uri, not my uri
     // which si a bit problematic, since I may not access parents uri

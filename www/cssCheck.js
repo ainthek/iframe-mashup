@@ -1,3 +1,5 @@
+/* exported cssCheck */
+/* exported loadCss */
 function cssCheck(expectedStyleSheet, realStyleSheet) {
     // function checks if real is 'sublist' of expected
     // usefull to allow or deny application of CSS in your component
@@ -36,7 +38,7 @@ function cssCheck(expectedStyleSheet, realStyleSheet) {
     }
 
     function isSubList(full, sequence) {
-        for (var f = 0, s = 0, fl = full.length, sl = sequence.length; s < sl && f < fl; full[f++] === sequence[s] && s++);
+        for (var f = 0, s = 0, fl = full.length, sl = sequence.length; s < sl && f < fl; full[f++] === sequence[s] && s++){}
         return full && s == sl;
     }
 
@@ -63,7 +65,7 @@ function cssCheck(expectedStyleSheet, realStyleSheet) {
             }
         }
         return undefined;
-    };
+    }
 }
 
 function loadCss(uri, allowedStylesheet) {

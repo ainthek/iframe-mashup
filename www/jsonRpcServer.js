@@ -1,5 +1,7 @@
+ /* exported jsonRpcServer */
 function jsonRpcServer(api, targetWindow, targetOrigin) {
     // add own listener listening for all methods from API
+    targetOrigin || (targetOrigin="*"); //REVIEW:
     return function(evt) {
         var request;
         try {
@@ -11,12 +13,12 @@ function jsonRpcServer(api, targetWindow, targetOrigin) {
         }
         var method = api[request.method];
         if (!method) {
-            targetWindow.postMessage(err(-32601), "*"); //method not found
+            targetWindow.postMessage(err(-32601), targetOrigin); //method not found
         } else {
             method.apply(null, request.params.concat(function(e, r) {
                 e //
-                    && targetWindow.postMessage(err(-32603), "*") //
-                    || targetWindow.postMessage(result(r), "*")
+                    && targetWindow.postMessage(err(-32603), targetOrigin) //
+                    || targetWindow.postMessage(result(r), targetOrigin);
             }));
         }
 
@@ -32,13 +34,13 @@ function jsonRpcServer(api, targetWindow, targetOrigin) {
             });
         }
 
-        function result(result) {
+        function result(r) {
             return JSON.stringify({
-                result: result,
+                result: r,
                 // RPC payload   
                 "jsonrpc": "2.0",
                 "id": request.id // echo original id 
             });
         }
-    }
+    };
 }

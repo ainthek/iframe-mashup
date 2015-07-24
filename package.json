@@ -1,0 +1,23 @@
+{
+  "name": "iframe-mashup",
+  "version": "1.0.0",
+  "description": "Simple demo of widgets hosted as iframes",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ainthek/iframe-mashup.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ainthek/iframe-mashup/issues"
+  },
+  "homepage": "https://github.com/ainthek/iframe-mashup#readme",
+  "devDependencies": {
+    "http-server": "^0.8.0",
+    "jshint": "^2.8.0"
+  }
+}

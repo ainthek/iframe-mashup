@@ -1,3 +1,4 @@
+ /* exported jsonRpcCall */
  function jsonRpcCall(otherWindow, method, params, callback) {
      //http://www.jsonrpc.org/specification
      var request = {
@@ -6,7 +7,7 @@
          "params": params,
          // RPC payload   
          "jsonrpc": "2.0",
-         "id": +new Date + Math.random()
+         "id": +new Date() + Math.random()
      };
      window.addEventListener("message", function(evt) {
 

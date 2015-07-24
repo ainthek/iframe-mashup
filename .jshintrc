@@ -1,0 +1,17 @@
+{
+	"eqnull":true,
+	"sub":true, 
+	"undef":true, 
+	"devel":true, 
+	"dojo":true, 
+	"browser":true, 
+	"nonstandard":true,
+	"unused":true,
+	"maxcomplexity":20,
+	"laxbreak":true,
+	"expr":true,
+	"curly":true,
+	"node":true,
+	"strict":false
+	
+}
