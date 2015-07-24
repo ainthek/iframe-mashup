@@ -98,7 +98,7 @@
             lng: 150.644
         }], function() {});
     };
-    window.addEventListener("message",jsonListener(function(evt, data) {
+    window.addEventListener("message",jsonListener(frames.widget4,function(evt, data) {
         jsonRpcCall(frames.widget2, "display", [JSON.stringify(data)], function() {});
     }), false);
     </script>
